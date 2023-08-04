@@ -10,12 +10,24 @@ import { Pensamento } from '../Pensamento';
 export class ListarPensamentoComponent implements OnInit {
 
   listaPensamentos:Pensamento[] = [];
+  paginaAtual = 1;
+  haMaisPensamentos: boolean = true;
 
   constructor(private pensamentoService: PensamentoService) { }
 
   ngOnInit(): void {
-    this.pensamentoService.listar().subscribe((lista) => {
+    this.pensamentoService.listar(this.paginaAtual).subscribe((lista) => {
       this.listaPensamentos = lista
+    });
+  }
+
+  carregarMaisPensamentos() {
+    this.pensamentoService.listar(++this.paginaAtual).subscribe(pensamento => {
+      this.listaPensamentos.push(...pensamento);
+
+      if(!pensamento.length) {
+        this.haMaisPensamentos = false;
+      }
     });
   }
 
